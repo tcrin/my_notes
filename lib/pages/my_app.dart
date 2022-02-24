@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/pages/home_page.dart';
-import 'package:mynotes/pages/landing_page.dart';
-import 'package:mynotes/pages/login_page.dart';
-import 'package:mynotes/pages/onbording_page.dart';
 import 'package:mynotes/pages/register_page.dart';
+
+import 'login_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -16,7 +15,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginPage(),
+      home: const HomePage(),
+      routes: {
+        '/login/': (context) => const LoginPage(),
+        '/register/': (context) => const RegisterPage(),
+      },
     );
   }
 }
