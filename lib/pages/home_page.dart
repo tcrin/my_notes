@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           // return const Text('Done');
 
           default:
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
         }
       },
     );

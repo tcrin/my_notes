@@ -64,8 +64,10 @@ class _LoginPageState extends State<LoginPage> {
                   //const LogProvider('😍').log(userCredential.toString());
                   // ignore: avoid_print
                   devtools.log(userCredential.toString());
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil('/notes/', (route) => false);
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/notes/',
+                    (route) => false,
+                  );
                   // const LogProvider('😰').log('Something bad happend');
                 } on FirebaseAuthException catch (e) {
                   // const LogProvider('😰').log('Something bad happend');
@@ -84,8 +86,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/register/', (route) => false);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/register/',
+                  (route) => false,
+                );
               },
               child: const Text('Not registered yet? Register here!'),
             ),
