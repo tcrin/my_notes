@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mynotes/pages/login_page.dart';
-import 'package:mynotes/pages/verify_email_page.dart';
-import 'package:mynotes/providers/log_provider.dart';
-
+import '../pages/login_page.dart';
+import '../pages/notes_page.dart';
+import '../pages/verify_email_page.dart';
+import '../providers/log_provider.dart';
 import '../firebase_options.dart';
+import 'dart:developer' as devtools show log;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -45,13 +46,14 @@ class _HomePageState extends State<HomePage> {
             if (user != null) {
               if (user.emailVerified) {
                 const LogProvider('😍').log('Email is verified');
+                return const NotesPage();
               } else {
                 return const VerifyEmailPage();
               }
             } else {
               return const LoginPage();
             }
-            return const Text('Done');
+          //return const Text('Done');
           // final user = FirebaseAuth.instance.currentUser;
           // if (user?.emailVerified ?? false) {
           //   //Đã xác thực

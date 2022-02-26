@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
-import 'package:mynotes/providers/log_provider.dart';
+import '../providers/log_provider.dart';
 
 import 'register_page.dart';
+import 'dart:developer' as devtools show log;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -56,15 +57,15 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () async {
                 final email = _email.text;
                 final password = _password.text;
-
                 try {
                   final userCredential = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: email, password: password);
                   //const LogProvider('😍').log(userCredential.toString());
                   // ignore: avoid_print
-                  print(userCredential);
-
+                  devtools.log(userCredential.toString());
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/notes/', (route) => false);
                   // const LogProvider('😰').log('Something bad happend');
                 } on FirebaseAuthException catch (e) {
                   // const LogProvider('😰').log('Something bad happend');
