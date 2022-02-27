@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mynotes/pages/notes_page.dart';
+import '../pages/verify_email_page.dart';
+import '../constants/routes.dart';
+import '../pages/notes_page.dart';
 import '../pages/home_page.dart';
 import '../pages/register_page.dart';
 
@@ -18,9 +20,10 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomePage(),
       routes: {
-        '/login/': (context) => const LoginPage(),
-        '/register/': (context) => const RegisterPage(),
-        '/notes/': (context) => const NotesPage(),
+        loginRoute: (context) => const LoginPage(),
+        registerRoute: (context) => const RegisterPage(),
+        notesRoute: (context) => const NotesPage(),
+        verifyEmailRoute: (context) => const VerifyEmailPage(),
       },
     );
   }

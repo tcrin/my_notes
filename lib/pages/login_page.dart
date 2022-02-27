@@ -1,9 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:flutter/material.dart';
-import '../providers/log_provider.dart';
-
-import 'register_page.dart';
+import '../services/auth/auth_exceptions.dart';
+import '../services/auth/auth_service.dart';
+import '../utilities/show_error_dialog.dart';
+import '../constants/routes.dart';
 import 'dart:developer' as devtools show log;
 
 class LoginPage extends StatefulWidget {
@@ -58,28 +57,39 @@ class _LoginPageState extends State<LoginPage> {
                 final email = _email.text;
                 final password = _password.text;
                 try {
-                  final userCredential = await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: email, password: password);
-                  //const LogProvider('😍').log(userCredential.toString());
-                  // ignore: avoid_print
-                  devtools.log(userCredential.toString());
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    '/notes/',
-                    (route) => false,
+                  await AuthService.firebase().logIn(
+                    email: email,
+                    password: password,
                   );
-                  // const LogProvider('😰').log('Something bad happend');
-                } on FirebaseAuthException catch (e) {
-                  // const LogProvider('😰').log('Something bad happend');
-                  // print(e.code);
-                  //Email chưa đăng ký
-                  if (e.code == 'user-not-found') {
-                    const LogProvider('😰').log('User not found');
+                  final user = AuthService.firebase().currentUser;
+                  if (user?.isEmailVerified ?? false) {
+                    //user's email is verified
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      notesRoute,
+                      (route) => false,
+                    );
+                  } else {
+                    //user's email is NOT verified
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      verifyEmailRoute,
+                      (route) => false,
+                    );
                   }
-                  //Mật khẩu không đúng
-                  else if (e.code == 'wrong-password') {
-                    const LogProvider('😰').log('Wrong password');
-                  }
+                } on UserNotFoundAuthException {
+                  await showErrorDialog(
+                    context,
+                    'User not found',
+                  );
+                } on WrongPasswordAuthException {
+                  await showErrorDialog(
+                    context,
+                    'Wrong credentials',
+                  );
+                } on GenericAuthException {
+                  await showErrorDialog(
+                    context,
+                    'Authentication error',
+                  );
                 }
               },
               child: const Text('Login'),
@@ -87,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/register/',
+                  registerRoute,
                   (route) => false,
                 );
               },

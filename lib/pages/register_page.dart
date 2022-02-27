@@ -1,6 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../providers/log_provider.dart';
+import '../services/auth/auth_exceptions.dart';
+import '../services/auth/auth_service.dart';
+import '../utilities/show_error_dialog.dart';
+import '../constants/routes.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -54,27 +56,32 @@ class _RegisterPageState extends State<RegisterPage> {
               final password = _password.text;
 
               try {
-                final userCredential = await FirebaseAuth.instance
-                    .createUserWithEmailAndPassword(
-                        email: email, password: password);
-                //const LogProvider('😍').log(userCredential.toString());
-                // ignore: avoid_print
-                print(userCredential);
-
-                // const LogProvider('😰').log('Something bad happend');
-              } on FirebaseAuthException catch (e) {
-                //Mật khẩu yếu, dưới 6 kí tự
-                if (e.code == 'weak-password') {
-                  const LogProvider('😰').log('Weak password');
-                }
-                //Email đã được sử dụng
-                else if (e.code == 'email-already-in-use') {
-                  const LogProvider('😰').log('Email already in use');
-                }
-                //Định dạng email đăng ký không hợp lệ
-                else if (e.code == 'invalid-email') {
-                  const LogProvider('😰').log('Invalid email');
-                }
+                await AuthService.firebase().createUser(
+                  email: email,
+                  password: password,
+                );
+                AuthService.firebase().sendEmailVerification();
+                Navigator.of(context).pushNamed(verifyEmailRoute);
+              } on WeakPasswordAuthException {
+                await showErrorDialog(
+                  context,
+                  'Weak password',
+                );
+              } on EmailAlreadyInUseAuthException {
+                await showErrorDialog(
+                  context,
+                  'Email is already in use',
+                );
+              } on InvalidEmailAuthException {
+                await showErrorDialog(
+                  context,
+                  'This is an invalid email address',
+                );
+              } on GenericAuthException {
+                await showErrorDialog(
+                  context,
+                  'Failed to register',
+                );
               }
             },
             child: const Text('Register'),
@@ -82,7 +89,7 @@ class _RegisterPageState extends State<RegisterPage> {
           TextButton(
             onPressed: () {
               Navigator.of(context)
-                  .pushNamedAndRemoveUntil('/login/', (route) => false);
+                  .pushNamedAndRemoveUntil(loginRoute, (route) => false);
             },
             child: const Text('Already registered? Login here!'),
           ),
