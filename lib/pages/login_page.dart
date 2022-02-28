@@ -3,7 +3,6 @@ import '../services/auth/auth_exceptions.dart';
 import '../services/auth/auth_service.dart';
 import '../utilities/show_error_dialog.dart';
 import '../constants/routes.dart';
-import 'dart:developer' as devtools show log;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
